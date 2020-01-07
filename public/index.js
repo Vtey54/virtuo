@@ -73,6 +73,7 @@ const rentals = [{
   'carId': '4afcc3a2-bbf4-44e8-b739-0179a6cd8b7d',
   'pickupDate': '2019-12-01',
   'returnDate': '2019-12-15',
+  'distance': 1000,
   'options': {
     'deductibleReduction': true
   },
@@ -157,6 +158,33 @@ const actors = [{
   }]
 }];
 
+var reductionTest = function(){
+
+}
+
+
+var testReduction = function(diffDays)
+{
+  if(diffDays>10)
+    {
+      return 0.5;
+    }
+    else
+    {
+      if(diffDays>4)
+      {
+        return 0.7;
+      }
+      else
+      {
+        if(diffDays>1)
+          {
+            return 0.9;
+          }
+      }
+    }
+  return 1;
+}
 
 function fillPrices() {
   var debut;
@@ -183,9 +211,12 @@ function fillPrices() {
     diffTime=Math.abs(fin-debut);
     diffDays=Math.ceil(diffTime/(1000*60*60*24));
 
-    rentals[i].price=rentals[i].distance*pricePerKmVar+diffDays*pricePerDayVar;
+    rentals[i].price=(rentals[i].distance*pricePerKmVar+diffDays*pricePerDayVar)*testReduction(diffDays);
+
   }
 }
+
+
 
 fillPrices()
 
