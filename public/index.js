@@ -244,11 +244,57 @@ function fillCommissions() {
   }
 
 }
+function fillActors(){
+  var rentalPrice;
+  var commission;
+  var insurance;
+  var treasury;
+  var virtuo;
+  var deductible;
+
+
+  for(var i = 0;i<actors.length;i++){
+    for(var j=0;j<rentals.length;j++){
+      if(actors[i].rentalId==rentals[j].id){
+        deductible=getDays(rentals[j])*4*rentals[j].options.deductibleReduction;
+        rentalPrice=rentals[j].price;
+        insurance=rentals[j].commission.insurance;
+        treasury=rentals[j].commission.treasury;
+        virtuo=rentals[j].commission.virtuo;
+        commission=virtuo+treasury+insurance-deductible;
+      }
+    }
+    for(j=0;j<actors[i].payment.length;j++){
+      switch(actors[i].payment[j].who){
+      case 'driver':
+        actors[i].payment[j].amount=rentalPrice;
+        break;
+      case 'partner':
+        actors[i].payment[j].amount=rentalPrice-commission;
+        break;
+      case 'insurance':
+        actors[i].payment[j].amount=insurance;
+        break;
+      case 'treasury' :
+        actors[i].payment[j].amount=treasury;
+        break;
+      case 'virtuo' :
+        actors[i].payment[j].amount=virtuo;
+        break;
+      default :
+        break;
+    }
+    }
+    
+
+  }
+}
 
 
 
 fillPrices();
 fillCommissions();
+fillActors();
 
 console.log(cars);
 console.log(rentals);
