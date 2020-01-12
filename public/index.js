@@ -158,9 +158,7 @@ const actors = [{
   }]
 }];
 
-var reductionTest = function(){
 
-}
 
 
 var testReduction = function(diffDays)
@@ -186,14 +184,28 @@ var testReduction = function(diffDays)
   return 1;
 }
 
-function fillPrices() {
+var getDays = function(rentals)
+{
   var debut;
   var fin;
   var diffTime;
   var diffDays;
-  var distance;
+  debut= new Date(rentals.pickupDate);
+  fin = new Date(rentals.returnDate);
+  diffTime=Math.abs(fin-debut);
+  diffDays=Math.ceil(diffTime/(1000*60*60*24));
+  return diffDays;
+
+}
+
+
+
+function fillPrices() {
+
+
   var pricePerDayVar;
   var pricePerKmVar;
+  var duree;
 
   for(var i=0;i<rentals.length;i++)
   {
@@ -206,19 +218,33 @@ function fillPrices() {
 
       }
     }
-    debut= new Date(rentals[i].pickupDate);
-    fin = new Date(rentals[i].returnDate);
-    diffTime=Math.abs(fin-debut);
-    diffDays=Math.ceil(diffTime/(1000*60*60*24));
+    duree=getDays(rentals[i]);
 
-    rentals[i].price=(rentals[i].distance*pricePerKmVar+diffDays*pricePerDayVar)*testReduction(diffDays);
+    rentals[i].price=(rentals[i].distance*pricePerKmVar+duree*pricePerDayVar)*testReduction(duree);
 
   }
 }
 
+function fillCommissions() {
+
+  var commission;
+  var duree;
 
 
-fillPrices()
+  for(var i=0;i<rentals.length;i++){
+    duree = getDays(rentals[i]);
+    commission=rentals[i].price*0.3;
+    rentals[i].commission.insurance=commission/2;
+    rentals[i].commission.treasury=1*duree;
+    rentals[i].commission.virtuo=commission-(rentals[i].commission.insurance)-(rentals[i].commission.treasury);
+  }
+
+}
+
+
+
+fillPrices();
+fillCommissions();
 
 console.log(cars);
 console.log(rentals);
