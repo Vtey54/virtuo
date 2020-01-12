@@ -206,6 +206,7 @@ function fillPrices() {
   var pricePerDayVar;
   var pricePerKmVar;
   var duree;
+  var deductible;
 
   for(var i=0;i<rentals.length;i++)
   {
@@ -219,8 +220,9 @@ function fillPrices() {
       }
     }
     duree=getDays(rentals[i]);
+    deductible=duree*4*rentals[i].options.deductibleReduction;
 
-    rentals[i].price=(rentals[i].distance*pricePerKmVar+duree*pricePerDayVar)*testReduction(duree);
+    rentals[i].price=(rentals[i].distance*pricePerKmVar+duree*pricePerDayVar)*testReduction(duree)+deductible;
 
   }
 }
@@ -229,14 +231,16 @@ function fillCommissions() {
 
   var commission;
   var duree;
+  var deductible;
 
 
   for(var i=0;i<rentals.length;i++){
     duree = getDays(rentals[i]);
-    commission=rentals[i].price*0.3;
+    deductible=duree*4*rentals[i].options.deductibleReduction;
+    commission=(rentals[i].price-deductible)*0.3;
     rentals[i].commission.insurance=commission/2;
     rentals[i].commission.treasury=1*duree;
-    rentals[i].commission.virtuo=commission-(rentals[i].commission.insurance)-(rentals[i].commission.treasury);
+    rentals[i].commission.virtuo=commission-(rentals[i].commission.insurance)-(rentals[i].commission.treasury)+deductible;
   }
 
 }
